@@ -1,63 +1,85 @@
 package arrays;
 
+import java.util.Scanner;
+
 public class RotateArray {
-
-	 public static void leftRotate(int [] nums, int k) {
-		 
-		 if(nums.length == 1)
-			 return;
-		 
-		 //reverse the array from 0 to n-1
-		 reverse(nums,0,nums.length-1);
-		 
-		 //reverse the array from 0 to n-k-1 (first n-k numbers)
-		 reverse(nums,0,nums.length-k-1);
-		 
-		 //reverse the array from n-k to n-1 (remaining k numbers)
-		 reverse(nums,nums.length - k, nums.length -1 );
-	 }
-	 
-	 public static void rightRotate(int [] nums, int k) {
-		 
-		 if(nums.length == 1)
-			 return;
-		 
-		 //reverse the array from 0 to n-1 
-		 reverse(nums,0,nums.length - 1);
-		 
-		 //reverse the array from 0 to k-1 (first k numbers)
-		 reverse(nums,0,k-1);
-		 
-		 //reverse the array from k to n-1 (remaining n-k numbers)
-		 reverse(nums,k ,nums.length-1);
-	 }
 	
+	
+	//brute
+	public static void leftRotate(int[] arr, int k) {
+		
+		k = k % arr.length;
+		
+		if(k == 0)
+			return;
+		
+		
+		int[] temp = new int[k];
 
-	private static void reverse(int[] nums, int start, int end) {
+		// copy k items to temp;
+		for (int i = 0; i < k; i++) {
+			temp[i] = arr[i];
+		}
+
+		// shift n-k items to the front
+		for (int i = k; i < arr.length; i++) {
+			arr[i - k] = arr[i];
+		}
+
+		// copy items from temp to back of the array.
+		for (int i = arr.length - k; i < arr.length; i++) {
+			arr[i] = temp[i - (arr.length - k)];
+		}
+	}
+	
+	//optimal
+	public static void leftRotate1(int[] arr, int k, int n) {
 		
-		int left = start;
-		int right = end;
+		k = k % n;
+		
+		if(k == 0)
+			return;
+		
+		//reverse first k elements
+		reverse(arr, 0, k-1);
+		//reverse next n-k elements
+		reverse(arr, k, n-1);
+		//reverse the entire array
+		reverse(arr, 0, n-1);
+		
+	}
+	
+	private static void reverse(int[] arr, int start, int end) {
+
 		int temp = 0;
-		
-		while(left < right) {
-			temp = nums[left];
-			nums[left] = nums[right];
-			nums[right] = temp;
-			left++;
-			right--;
+		while (start < end) {
+			temp = arr[end];
+			arr[end] = arr[start];
+			arr[start] = temp;
+			start++;
+			end--;
 		}
 	}
 
-
 	public static void main(String[] args) {
-		int []arr = {1,2,3,4,5,6,7};
+		int n = 0;
+		int k = 0;
 		
-		//leftRotate(arr,2);
+		Scanner scanner = new Scanner(System.in);
 		
-		rightRotate(arr,2);
+		n = scanner.nextInt();
 		
-		for(int it : arr)
-			System.out.print(it+" ");
+		int [] arr = new int [n];
 		
+		for(int i=0; i  < n; i++)
+			arr[i] = scanner.nextInt();
+		
+		 k = scanner.nextInt();
+		 
+		 scanner.close();
+		 leftRotate(arr,k);
+		 
+		 for(int it : arr)
+			 System.out.print(it+" ");
 	}
 }
